@@ -1,0 +1,73 @@
+Most Prolific Jazz Artist (Most Songs).
+
+
+SELECT Artist.ArtistId, Artist.Name, COUNT(Track.Name) AS Songs
+FROM Track
+JOIN Album
+ON album.AlbumId = track.AlbumId
+JOIN Artist
+ON Album.artistId = artist.ArtistId
+JOIN Genre
+ON Genre.GenreId = Track.GenreId
+WHERE Genre.GenreId = '2' 
+GROUP BY Artist.ArtistId
+ORDER BY Songs DESC
+
+
+Top artists based on the amount of invoices.
+
+
+SELECT artist.Name, SUM(InvoiceLine.Quantity * InvoiceLine.UnitPrice) AS AmountSpent, Artist.ArtistId
+FROM Invoice
+
+JOIN InvoiceLine
+ON invoiceLine.InvoiceId = invoice.InvoiceId
+JOIN Customer
+ON Customer.CustomerId = Invoice.CustomerId
+JOIN Track
+ON Track.TrackId = InvoiceLine.TrackId
+JOIN Album
+ON Album.AlbumId = Track.AlbumId 
+JOIN Artist
+ON Artist.ArtistId = Album.ArtistId
+
+GROUP BY Artist.artistId
+ORDER BY AmountSpent DESC
+
+
+Top five customers worldwide based on how much they spent.
+
+
+Select customer.customerId, invoice.total, customer.FirstName, customer.LastName, customer.country
+FROM Customer
+
+JOIN Invoice
+On Invoice.CustomerId = Customer.CustomerId
+JOIN InvoiceLine
+On Invoice.InvoiceId = InvoiceLine.InvoiceId
+JOIN Track
+On Track.TrackId = InvoiceLine.TrackId
+JOIN Genre
+On Genre.GenreId = Track.GenreId
+
+GROUP BY customer.customerid, customer.country
+ORDER BY invoice.total DESC
+LIMIT "5"
+
+
+
+Top countries organized by gross sales.
+
+
+SELECT 
+invoice.BillingCountry, 
+SUM (invoice.Total * .99) AS TotalSales
+FROM CUSTOMER
+
+JOIN Invoice
+ON invoice.customerId = customer.customerId
+JOIN InvoiceLine
+ON invoiceline.invoiceId = invoice.invoiceId
+
+GROUP BY invoice.BillingCountry
+ORDER BY Total DESC
